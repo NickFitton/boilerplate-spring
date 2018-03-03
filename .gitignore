@@ -158,6 +158,7 @@ cmake-build-release/
 
 # IntelliJ
 out/
+.idea
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
@@ -293,3 +294,6 @@ DerivedData/
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
+
+## Other ignores
+.gradle
