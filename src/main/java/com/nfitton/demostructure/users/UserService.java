@@ -1,7 +1,9 @@
 package com.nfitton.demostructure.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -17,6 +19,15 @@ public class UserService {
 
   public Mono<User> getUser(UUID userId) {
     return userDomain.getUser(userId);
+  }
+
+  public Flux<User> getAllUsers(int page, int size) {
+    PageRequest request = PageRequest.of(page, size);
+    return getAllUsers(request);
+  }
+
+  private Flux<User> getAllUsers(PageRequest request) {
+    return userDomain.getAllUsers(request);
   }
 
   /**

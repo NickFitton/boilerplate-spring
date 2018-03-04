@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -67,5 +69,11 @@ public class UserController {
   public ResponseEntity<GetUser> deleteUser(@PathVariable UUID userId) {
     userService.deleteUser(userId);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping()
+  public Flux<GetUser> getAllUsers(@RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "size", defaultValue = "20") int size) {
+    return userService.getAllUsers(page, size).map(GetUser::new);
   }
 }
