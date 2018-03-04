@@ -29,6 +29,11 @@ public class UserController {
     this.userService = userService;
   }
 
+  /**
+   * Create a user with the given {@code CreateUser}.
+   * @param createUserMono contains all the information needed to create a new user.
+   * @return A {@code GetUser} with the response status of {@code CREATED}.
+   */
   @PostMapping
   public Mono<ResponseEntity<GetUser>> createUser(@RequestBody Mono<CreateUser> createUserMono) {
     return createUserMono
@@ -43,6 +48,12 @@ public class UserController {
     return userService.getUser(userId).map(GetUser::new);
   }
 
+  /**
+   * Update a {@code User} of the given UUID with the given {@code UpdateUser} class.
+   * @param userId is the userId to update by.
+   * @param updateUserMono is the new information to update the user with.
+   * @return A {@code GetUser} with the updated user information.
+   */
   @PutMapping(path = "/{userId}")
   public Mono<GetUser> putUser(
       @PathVariable UUID userId, @RequestBody Mono<UpdateUser> updateUserMono) {

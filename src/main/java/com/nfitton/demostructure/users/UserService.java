@@ -19,6 +19,11 @@ public class UserService {
     return userDomain.getUser(userId);
   }
 
+  /**
+   * Update a user with the given {@code User}.
+   * @param user is the new user details for the id of the user.
+   * @return A mono of the updated user.
+   */
   public Mono<User> putUser(User user) {
     return userDomain
         .getUser(user.getId())

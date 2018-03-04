@@ -66,6 +66,10 @@ public class User {
     return updatedAt;
   }
 
+  /**
+   * Creates a {@code User.Builder} from the current {@code user}.
+   * @return A {@code User.builder} with all the variables of the current {@code User}.
+   */
   public Builder copy() {
     return User.newBuilder()
         .withId(this.getId())

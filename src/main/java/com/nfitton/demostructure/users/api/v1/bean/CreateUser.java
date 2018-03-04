@@ -40,6 +40,10 @@ public class CreateUser {
     return password;
   }
 
+  /**
+   * Creates a {@code User} from the current {@code CreateUser} class.
+   * @return a {@code User} with the variables from this {@code CreateUser}.
+   */
   public User toUser() {
     return User.newBuilder()
         .withFirstName(firstName)

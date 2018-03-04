@@ -27,6 +27,10 @@ public class GetUser {
     updatedAt = builder.updatedAt;
   }
 
+  /**
+   * Create a {@code GetUser} from the give {@code User}.
+   * @param user is the user to create a {@code GetUser} with.
+   */
   public GetUser(User user) {
     id = user.getId();
     firstName = user.getFirstName();

@@ -22,6 +22,10 @@ public class UpdateUser {
     return new Builder();
   }
 
+  /**
+   * Creates a {@code User} from the current {@code UpdateUser} class.
+   * @return a {@code User} with the variables from this {@code UpdateUser}.
+   */
   public User toUser() {
     return User.newBuilder()
         .withFirstName(firstName)
