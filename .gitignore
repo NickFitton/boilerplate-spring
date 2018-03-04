@@ -142,7 +142,6 @@ GitHub.sublime-settings
 .idea/**/dataSources.local.xml
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
 
 # CMake
 cmake-build-debug/
@@ -178,7 +177,6 @@ fabric.properties
 
 .metadata
 bin/
-tmp/
 *.tmp
 *.swp
 *~.nib
@@ -297,3 +295,4 @@ DerivedData/
 
 ## Other ignores
 .gradle
+/boilerplate-spring.iml
