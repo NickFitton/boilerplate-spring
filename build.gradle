@@ -16,6 +16,20 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
+
+checkstyle {
+    configFile = file('checkstyle/checkstyle.xml')
+    maxWarnings = 0
+    checkstyleTest.enabled = false
+}
+
+jacocoTestReport {
+	reports {
+		xml.enabled true
+		html.enabled true
+	}
+}
 
 group = 'com.nfitton'
 version = '0.0.1-SNAPSHOT'
