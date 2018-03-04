@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/NickFitton/boilerplate-spring.svg?branch=master)](https://travis-ci.org/NickFitton/boilerplate-spring) [![codecov](https://codecov.io/gh/NickFitton/boilerplate-spring/branch/master/graph/badge.svg)](https://codecov.io/gh/NickFitton/boilerplate-spring) 
+
 ## Welcome to GitHub Pages
 
 You can use the [editor on GitHub](https://github.com/NickFitton/boilerplate-spring/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
