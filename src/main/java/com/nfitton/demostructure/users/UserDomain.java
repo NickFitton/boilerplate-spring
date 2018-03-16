@@ -1,9 +1,11 @@
 package com.nfitton.demostructure.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.ZonedDateTime;
@@ -20,6 +22,14 @@ class UserDomain {
     user =
         user.copy().withCreatedAt(ZonedDateTime.now()).withUpdatedAt(ZonedDateTime.now()).build();
     return Mono.just(userRepository.save(user));
+  }
+
+  protected Flux<User> getAllUsers(PageRequest request) {
+    return Flux.fromIterable(userRepository.findAll(request));
+  }
+
+  protected Mono<Long> countUsers() {
+    return Mono.just(userRepository.count());
   }
 
   protected Mono<User> getUser(UUID userId) {
