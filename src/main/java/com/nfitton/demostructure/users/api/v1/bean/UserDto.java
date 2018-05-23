@@ -1,20 +1,17 @@
-package com.nfitton.demostructure.users;
+package com.nfitton.demostructure.users.api.v1.bean;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.nfitton.demostructure.users.UserEntity;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "users")
-public class User {
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonDeserialize(builder = UserDto.Builder.class)
+public class UserDto {
   private UUID id;
-
   private String firstName;
   private String lastName;
   private String email;
@@ -22,9 +19,7 @@ public class User {
   private ZonedDateTime createdAt;
   private ZonedDateTime updatedAt;
 
-  private User() {}
-
-  private User(Builder builder) {
+  private UserDto(Builder builder) {
     id = builder.id;
     firstName = builder.firstName;
     lastName = builder.lastName;
@@ -67,36 +62,42 @@ public class User {
   }
 
   /**
-   * Creates a {@code User.Builder} from the current {@code user}.
-   * @return A {@code User.builder} with all the variables of the current {@code User}.
+   * Creates a {@code UserEntity} from the current {@code UserDto} class.
+   *
+   * @return a {@code UserEntity} with the variables from this {@code UserDto}.
    */
-  public Builder copy() {
-    return User.newBuilder()
-        .withId(this.getId())
-        .withFirstName(this.getFirstName())
-        .withLastName(this.getLastName())
-        .withEmail(this.getEmail())
-        .withPassword(this.getPassword())
-        .withCreatedAt(this.getCreatedAt())
-        .withUpdatedAt(this.getUpdatedAt());
+  public UserEntity toUser() {
+    return UserEntity.newBuilder()
+        .withFirstName(firstName)
+        .withLastName(lastName)
+        .withEmail(email)
+        .withPassword(password)
+        .build();
   }
 
+  public static UserDto fromEntity(UserEntity entity) {
+    return UserDto.newBuilder()
+        .withId(entity.getId())
+        .withFirstName(entity.getFirstName())
+        .withLastName(entity.getLastName())
+        .withEmail(entity.getEmail())
+        .withPassword(entity.getPassword())
+        .withCreatedAt(entity.getCreatedAt())
+        .withUpdatedAt(entity.getUpdatedAt())
+        .build();
+  }
+
+  @JsonPOJOBuilder
   public static final class Builder {
-    private UUID id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private ZonedDateTime deletedAt;
+    private UUID id;
 
     private Builder() {}
-
-    public Builder withId(UUID val) {
-      id = val;
-      return this;
-    }
 
     public Builder withFirstName(String val) {
       firstName = val;
@@ -128,13 +129,13 @@ public class User {
       return this;
     }
 
-    public Builder withDeletedAt(ZonedDateTime val) {
-      deletedAt = val;
-      return this;
+    public UserDto build() {
+      return new UserDto(this);
     }
 
-    public User build() {
-      return new User(this);
+    public Builder withId(UUID val) {
+      id = val;
+      return this;
     }
   }
 }

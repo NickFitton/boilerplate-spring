@@ -11,31 +11,37 @@ import java.util.UUID;
 @Service
 public class UserService {
 
-  @Autowired private UserDomain userDomain;
+  private final UserDomain userDomain;
 
-  public Mono<User> createUser(User user) {
+  @Autowired
+  public UserService(UserDomain userDomain) {
+    this.userDomain = userDomain;
+  }
+
+  public Mono<UserEntity> createUser(UserEntity user) {
     return userDomain.postUser(user);
   }
 
-  public Mono<User> getUser(UUID userId) {
+  public Mono<UserEntity> getUser(UUID userId) {
     return userDomain.getUser(userId);
   }
 
-  public Flux<User> getAllUsers(int page, int size) {
+  public Flux<UserEntity> getAllUsers(int page, int size) {
     PageRequest request = PageRequest.of(page, size);
     return getAllUsers(request);
   }
 
-  private Flux<User> getAllUsers(PageRequest request) {
+  private Flux<UserEntity> getAllUsers(PageRequest request) {
     return userDomain.getAllUsers(request);
   }
 
   /**
-   * Update a user with the given {@code User}.
+   * Update a user with the given {@code UserEntity}.
+   *
    * @param user is the new user details for the id of the user.
    * @return A mono of the updated user.
    */
-  public Mono<User> putUser(User user) {
+  private Mono<UserEntity> putUser(UserEntity user) {
     return userDomain
         .getUser(user.getId())
         .map(
@@ -49,15 +55,11 @@ public class UserService {
         .flatMap(userDomain::putUser);
   }
 
-  public Mono<User> putUser(UUID userId, User user) {
+  public Mono<UserEntity> putUser(UUID userId, UserEntity user) {
     return putUser(user.copy().withId(userId).build());
   }
 
   public void deleteUser(UUID userId) {
     userDomain.deleteUser(userId);
-  }
-
-  public void deleteUser(User user) {
-    deleteUser(user.getId());
   }
 }

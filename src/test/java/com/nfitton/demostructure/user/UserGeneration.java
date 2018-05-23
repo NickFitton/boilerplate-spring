@@ -1,19 +1,18 @@
 package com.nfitton.demostructure.user;
 
-import com.nfitton.demostructure.users.User;
-import com.nfitton.demostructure.users.api.v1.bean.GetUser;
-import com.nfitton.demostructure.users.api.v1.bean.UpdateUser;
-import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.BodyInserters;
-
 import static com.nfitton.demostructure.util.generator.StringGenerator.generateEmail;
 import static com.nfitton.demostructure.util.generator.StringGenerator.generateName;
 import static com.nfitton.demostructure.util.generator.StringGenerator.generatePassword;
 
+import com.nfitton.demostructure.users.UserEntity;
+import com.nfitton.demostructure.users.api.v1.bean.UserDto;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
+
 class UserGeneration {
 
-  private static User generateUser() {
-    return User.newBuilder()
+  private static UserEntity generateUserEntity() {
+    return UserEntity.newBuilder()
         .withFirstName(generateName())
         .withLastName(generateName())
         .withEmail(generateEmail())
@@ -21,16 +20,12 @@ class UserGeneration {
         .build();
   }
 
-  static UpdateUser generateUpdateUser() {
-    return UpdateUser.newBuilder()
-        .withFirstName(generateName())
-        .withLastName(generateName())
-        .withEmail(generateEmail())
-        .build();
+  static UserDto generateUserDto() {
+    return UserDto.fromEntity(generateUserEntity());
   }
 
-  static GetUser createValidUser(WebTestClient client) {
-    User newUser = generateUser();
+  static UserDto createValidUser(WebTestClient client) {
+    UserEntity newUser = generateUserEntity();
 
     return client
         .post()
@@ -39,7 +34,7 @@ class UserGeneration {
         .exchange()
         .expectStatus()
         .isCreated()
-        .expectBody(GetUser.class)
+        .expectBody(UserDto.class)
         .returnResult()
         .getResponseBody();
   }

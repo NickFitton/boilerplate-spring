@@ -17,14 +17,14 @@ import java.util.UUID;
 class UserDomain {
   @Autowired UserRepository userRepository;
 
-  protected Mono<User> postUser(User user) {
+  protected Mono<UserEntity> postUser(UserEntity user) {
     assertUserUnique(user);
     user =
         user.copy().withCreatedAt(ZonedDateTime.now()).withUpdatedAt(ZonedDateTime.now()).build();
     return Mono.just(userRepository.save(user));
   }
 
-  protected Flux<User> getAllUsers(PageRequest request) {
+  protected Flux<UserEntity> getAllUsers(PageRequest request) {
     return Flux.fromIterable(userRepository.findAll(request));
   }
 
@@ -32,21 +32,21 @@ class UserDomain {
     return Mono.just(userRepository.count());
   }
 
-  protected Mono<User> getUser(UUID userId) {
+  protected Mono<UserEntity> getUser(UUID userId) {
     return Mono.just(userRepository.findById(userId))
         .flatMap(
             optionalUser ->
                 optionalUser
-                    .<Mono<? extends User>>map(Mono::just)
+                    .<Mono<? extends UserEntity>>map(Mono::just)
                     .orElseGet(
                         () ->
                             Mono.error(
                                 new ResponseStatusException(
                                     HttpStatus.NOT_FOUND,
-                                    "User with given id '" + userId.toString() + "' not found"))));
+                                    "UserEntity with given id '" + userId.toString() + "' not found"))));
   }
 
-  protected Mono<User> putUser(User updatedUser) {
+  protected Mono<UserEntity> putUser(UserEntity updatedUser) {
     if (Objects.isNull(updatedUser.getId())) {
       return Mono.error(
           new ResponseStatusException(HttpStatus.BAD_REQUEST, "Put user must have a userId"));
@@ -57,17 +57,17 @@ class UserDomain {
         .switchIfEmpty(
             Mono.error(
                 new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found for userId: " + updatedUser.getId())))
+                    HttpStatus.NOT_FOUND, "UserEntity not found for userId: " + updatedUser.getId())))
         .map(user -> user.copy().withUpdatedAt(ZonedDateTime.now()).build())
         .map(userRepository::save);
   }
 
-  protected Mono<User> patchUser(UUID userId, User user) {
+  protected Mono<UserEntity> patchUser(UUID userId, UserEntity user) {
     assertUserUnique(user);
     return getUser(userId)
         .map(
             returnedUser -> {
-              User.Builder builder = returnedUser.copy();
+              UserEntity.Builder builder = returnedUser.copy();
               if (Objects.nonNull(user.getFirstName())) {
                 builder.withFirstName(user.getFirstName());
               }
@@ -87,17 +87,17 @@ class UserDomain {
       userRepository.deleteById(userId);
     } else {
       throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "User with given id '" + userId.toString() + "' not found");
+          HttpStatus.NOT_FOUND, "UserEntity with given id '" + userId.toString() + "' not found");
     }
   }
 
-  private void assertUserUnique(User user) {
+  private void assertUserUnique(UserEntity user) {
     if (Objects.isNull(user.getId()) && userRepository.existsByEmail(user.getEmail())) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "User with given email exists");
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "UserEntity with given email exists");
     } else {
-      Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+      Optional<UserEntity> optionalUser = userRepository.findByEmail(user.getEmail());
       if (optionalUser.isPresent() && !optionalUser.get().getId().equals(user.getId())) {
-        throw new ResponseStatusException(HttpStatus.CONFLICT, "User with given email exists");
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "UserEntity with given email exists");
       }
     }
   }

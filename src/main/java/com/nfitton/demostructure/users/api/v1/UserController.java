@@ -1,9 +1,7 @@
 package com.nfitton.demostructure.users.api.v1;
 
 import com.nfitton.demostructure.users.UserService;
-import com.nfitton.demostructure.users.api.v1.bean.CreateUser;
-import com.nfitton.demostructure.users.api.v1.bean.GetUser;
-import com.nfitton.demostructure.users.api.v1.bean.UpdateUser;
+import com.nfitton.demostructure.users.api.v1.bean.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,48 +30,51 @@ public class UserController {
   }
 
   /**
-   * Create a user with the given {@code CreateUser}.
+   * Create a user with the given {@code UserDto}.
+   *
    * @param createUserMono contains all the information needed to create a new user.
    * @return A {@code GetUser} with the response status of {@code CREATED}.
    */
   @PostMapping
-  public Mono<ResponseEntity<GetUser>> createUser(@RequestBody Mono<CreateUser> createUserMono) {
+  public Mono<ResponseEntity<UserDto>> createUser(@RequestBody Mono<UserDto> createUserMono) {
     return createUserMono
-        .map(CreateUser::toUser)
+        .map(UserDto::toUser)
         .flatMap(user -> userService.createUser(user))
-        .map(GetUser::new)
-        .map(getUser -> ResponseEntity.status(201).body(getUser));
+        .map(UserDto::fromEntity)
+        .map(userDto -> ResponseEntity.status(201).body(userDto));
   }
 
   @GetMapping(path = "/{userId}")
-  public Mono<GetUser> getUser(@PathVariable UUID userId) {
-    return userService.getUser(userId).map(GetUser::new);
+  public Mono<UserDto> getUser(@PathVariable UUID userId) {
+    return userService.getUser(userId).map(UserDto::fromEntity);
   }
 
   /**
-   * Update a {@code User} of the given UUID with the given {@code UpdateUser} class.
+   * Update a {@code UserEntity} of the given UUID with the given {@code UpdateUser} class.
+   *
    * @param userId is the userId to update by.
    * @param updateUserMono is the new information to update the user with.
    * @return A {@code GetUser} with the updated user information.
    */
   @PutMapping(path = "/{userId}")
-  public Mono<GetUser> putUser(
-      @PathVariable UUID userId, @RequestBody Mono<UpdateUser> updateUserMono) {
+  public Mono<UserDto> putUser(
+      @PathVariable UUID userId, @RequestBody Mono<UserDto> updateUserMono) {
     return updateUserMono
-        .map(UpdateUser::toUser)
+        .map(UserDto::toUser)
         .flatMap(user -> userService.putUser(userId, user))
-        .map(GetUser::new);
+        .map(UserDto::fromEntity);
   }
 
   @DeleteMapping(path = "/{userId}")
-  public ResponseEntity<GetUser> deleteUser(@PathVariable UUID userId) {
+  public ResponseEntity<UserDto> deleteUser(@PathVariable UUID userId) {
     userService.deleteUser(userId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping()
-  public Flux<GetUser> getAllUsers(@RequestParam(value = "page", defaultValue = "0") int page,
-                                   @RequestParam(value = "size", defaultValue = "20") int size) {
-    return userService.getAllUsers(page, size).map(GetUser::new);
+  public Flux<UserDto> getAllUsers(
+      @RequestParam(value = "page", defaultValue = "0") int page,
+      @RequestParam(value = "size", defaultValue = "10") int size) {
+    return userService.getAllUsers(page, size).map(UserDto::fromEntity);
   }
 }
