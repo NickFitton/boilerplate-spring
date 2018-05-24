@@ -22,7 +22,7 @@ apply plugin: 'io.spring.dependency-management'
 checkstyle {
     configFile = file('checkstyle/checkstyle.xml')
     maxWarnings = 0
-    checkstyleTest.enabled = false
+    checkstyleTest.enabled = true
 }
 
 jacocoTestReport {

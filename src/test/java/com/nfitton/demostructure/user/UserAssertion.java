@@ -1,9 +1,9 @@
 package com.nfitton.demostructure.user;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.nfitton.demostructure.users.UserEntity;
 import com.nfitton.demostructure.users.api.v1.bean.UserDto;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class UserAssertion {
 
